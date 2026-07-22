@@ -1,0 +1,9 @@
+{
+  "auth.login.title": "Log in",
+  "auth.login.submit": "Log in",
+  "cv.upload.prompt": "Upload your CV",
+  "cv.upload.processing": "Processing your CV...",
+  "jobs.search.placeholder": "Search jobs",
+  "matches.score.label": "Match score",
+  "interview.session.start": "Start mock interview"
+}
