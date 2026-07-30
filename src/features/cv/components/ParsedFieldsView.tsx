@@ -26,12 +26,6 @@ interface ParsedFieldsViewProps {
   onStartOver?: () => void;
 }
 
-// TODO(backend sync): experience/education are typed as generic objects in
-// cv-parser-api.yaml (`type: object`, no sub-schema) — these interfaces are
-// this component's assumption about their shape, not a guaranteed contract.
-// Confirm with the backend owner: (1) is `id` actually present on every
-// entry, and (2) what format do the strings in flagged_sections use to
-// reference a specific experience/education entry?
 interface WorkEntry {
   id?: string;
   company: string;
@@ -47,13 +41,6 @@ interface EducationEntry {
   dates: string;
 }
 
-// NOTE(i18n): assumes t() is a simple key -> string lookup with no
-// interpolation support, matching every other observed usage in this repo
-// (t("cv.upload.processing"), etc.). For the two messages that need a
-// dynamic count, a "{count}" placeholder is replaced manually below. If
-// shared/i18n actually supports real interpolation (e.g. t(key, {count})),
-// swap these two spots to use that instead — flag with whoever owns
-// shared/i18n to confirm which is correct.
 function withCount(key: string, count: number): string {
   return t(key).replace("{count}", String(count));
 }
@@ -68,9 +55,6 @@ export function ParsedFieldsView({
     name: fields.name ?? "",
     email: fields.email ?? "",
     phone: fields.phone ?? "",
-    // NOTE: no `location` field exists on ParsedCv or ParsedCvEdit in
-    // cv-parser-api.yaml. Kept as local-only state — an edit here has
-    // nowhere to persist via PATCH /internal/cv/{id} until backend adds it.
     location: "",
     summary: fields.professional_summary ?? "",
 
@@ -115,9 +99,6 @@ export function ParsedFieldsView({
   const updateField = (field: keyof typeof data, value: string) => {
     setData((prev) => ({ ...prev, [field]: value }));
     setEditingField(null);
-    // TODO(Phase 5): call PATCH /internal/cv/{id} here with the corrected
-    // field so the flag actually clears server-side, per the API's
-    // business rule — local state alone doesn't persist this yet.
   };
 
   const updateExpBullet = (expId: string, bulletIdx: number, value: string) => {
