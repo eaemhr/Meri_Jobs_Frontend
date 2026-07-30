@@ -173,21 +173,21 @@ export function ParsedFieldsView({
                 {
                   id: "field-name",
                   icon: User,
-                  label: t("cv.parsed.fullName"),
+                  label: t("FullName"),
                   field: "name" as const,
                   value: data.name,
                 },
                 {
                   id: "field-email",
                   icon: Mail,
-                  label: t("cv.parsed.email"),
+                  label: t("Email"),
                   field: "email" as const,
                   value: data.email,
                 },
                 {
                   id: "field-phone",
                   icon: Phone,
-                  label: t("cv.parsed.phone"),
+                  label: t("Phone"),
                   field: "phone" as const,
                   value: data.phone,
                 },
@@ -259,12 +259,12 @@ export function ParsedFieldsView({
                 onClick={() => setEditingField("field-summary")}
               >
                 <p className="text-base leading-8 text-gray-700">
-                  {data.summary || t("cv.parsed.noSummary")}
+                  {data.summary || t("NoSummary")}
                 </p>
                 <div className="flex items-center gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <Edit3 size={11} className="text-muted-foreground" />
                   <span className="text-xs text-muted-foreground">
-                    {t("cv.parsed.clickToEdit")}
+                    {t("ClickToEdit")}
                   </span>
                 </div>
               </div>
@@ -329,13 +329,13 @@ export function ParsedFieldsView({
                           className="text-warning flex-shrink-0"
                         />
                         <p className="text-xs text-warning font-medium">
-                          {t("cv.parsed.entryFlagged")}
+                          {t("EntryFlagged")}
                         </p>
                         {/* TODO(Phase 5): call PATCH /internal/cv/{id} with
                             the confirmed value — editing clears the flag
                             server-side automatically. Not wired yet. */}
                         <button className="ml-auto text-xs text-accent font-semibold hover:underline">
-                          {t("cv.parsed.markAsCorrect")}
+                          {t("MarkAsCorrect")}
                         </button>
                       </div>
                     )}
@@ -418,7 +418,7 @@ export function ParsedFieldsView({
               ))}
               <button className="badge-base bg-muted text-muted-foreground border border-dashed border-border hover:border-primary hover:text-primary transition-all">
                 <Plus size={12} />
-                {t("cv.parsed.addSkill")}
+                {t("AddSkill")}
               </button>
             </div>
           </SectionCard>
