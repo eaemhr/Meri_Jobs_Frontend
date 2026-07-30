@@ -1,4 +1,5 @@
 import React from "react";
+import "./globals.css";
 import { NavSidebar } from "@/features/dashboard/components/NavSidebar";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
