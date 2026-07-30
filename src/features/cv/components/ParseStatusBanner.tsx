@@ -38,10 +38,7 @@ export function ParseStatusBanner({
     );
   }
 
-  // Distinct from "failed" — parsing succeeded, but some sections need the
-  // user's manual review. Falling through to null (or to the "failed"
-  // message) here would hide the one state where the user most needs
-  // feedback, per NFR-F1.2.
+ 
   if (status === "needs_review") {
     return (
       <div className="text-sm text-warning">{t("cv.upload.needsReview")}</div>
