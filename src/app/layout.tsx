@@ -1,14 +1,23 @@
-import React from "react";
-import { NavSidebar } from "@/features/dashboard/components/NavSidebar";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // TODO: auth-gate this — redirect unauthenticated users to /login,
-  // and first-time users into /onboarding.
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: 'Meri Jobs - Find Your Dream Job & Optimize CV',
+  description: 'AI-powered job matching, CV optimization, and interview preparation platform.',
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <body>
-        <NavSidebar />
-        <main>{children}</main>
+      <body className={`${inter.className} bg-slate-50 text-foreground antialiased min-h-screen`}>
+        {children}
       </body>
     </html>
   );
