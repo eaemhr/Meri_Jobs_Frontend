@@ -1,17 +1,21 @@
-import { apiClient } from "@/shared/api/client";
-
-export function uploadCv(file: File) {
+import { apiClient, apiUpload } from "@/shared/api/client";
+import type { CvStatus, UploadAccepted } from "./types";
+export function uploadCv(
+  file: File,
+  userId?: string,
+  onProgress?: (percent: number) => void,
+): Promise<UploadAccepted> {
   const formData = new FormData();
   formData.append("file", file);
-  // NOTE: apiClient assumes JSON bodies — extend it (or add a variant)
-  // to support multipart/form-data for real file uploads.
-  return apiClient<{ cvId: string }>("/cv/upload", { method: "POST", body: formData as any });
+
+  if (userId) {
+    formData.append("user_id", userId);
+  }
+
+  return apiUpload<UploadAccepted>("/cv", formData, onProgress);
 }
 
-export function getCvStatus(cvId: string) {
-  return apiClient<{ status: "processing" | "done" | "failed" }>(`/cv/${cvId}/status`);
-}
-
-export function getCvSuggestions(cvId: string) {
-  return apiClient<{ suggestions: string[] }>(`/cv/${cvId}/suggestions`);
+/** Poll target while a CV is being parsed. Used starting Day 2. */
+export function getCvStatus(cvId: string): Promise<CvStatus> {
+  return apiClient<CvStatus>(`/cv/${cvId}/status`);
 }

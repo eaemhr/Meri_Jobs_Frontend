@@ -2,6 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;500;600;700&display=swap");
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --primary: #1b4fd8;
+  --primary-foreground: #ffffff;
+  --primary-light: #eef2ff;
+  --secondary: #64748b;
+  --secondary-foreground: #ffffff;
+  --accent: #10b981;
+  --accent-foreground: #ffffff;
+  --accent-light: #ecfdf5;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --border: #e2e8f0;
+  --input: #f8fafc;
+  --ring: #1b4fd8;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --font-sans: var(--font-plus-jakarta-sans), "Noto Sans Ethiopic", sans-serif;
+  --warning: #f59e0b;
+  --warning-light: #fffbeb;
+  --error: #ef4444;
+  --error-light: #fef2f2;
+  --success: #10b981;
+  --success-light: #ecfdf5;
+  --score-high: #10b981;
+  --score-mid: #f59e0b;
+  --score-low: #ef4444;
+  --shadow-sm:
+    0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.06);
+  --shadow-md:
+    0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-lg:
+    0 10px 15px -3px rgba(15, 23, 42, 0.08),
+    0 4px 6px -4px rgba(15, 23, 42, 0.05);
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Ethiopic:wght@400;500;600;700&display=swap');
 
 :root {
@@ -58,6 +98,19 @@
     scroll-behavior: smooth;
   }
 
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    margin: 0;
+  }
+
+  input,
+  textarea,
+  select {
   h1, h2, h3, h4, h5, h6, p {
     margin: 0;
   }
@@ -69,6 +122,7 @@
 
 @layer utilities {
   .font-ethiopic {
+    font-family: "Noto Sans Ethiopic", sans-serif;
     font-family: 'Noto Sans Ethiopic', sans-serif;
   }
 
@@ -142,6 +196,8 @@
   }
 
   .score-badge-mid {
+    background-color: #fffbeb;
+    color: #d97706;
     background-color: #FFFBEB;
     color: #D97706;
   }
@@ -152,6 +208,21 @@
   }
 
   .source-remoteok {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border-color: #bbf7d0;
+  }
+
+  .source-indeed {
+    background-color: #eff6ff;
+    color: #2563eb;
+    border-color: #bfdbfe;
+  }
+
+  .source-upwork {
+    background-color: #f0fdf4;
+    color: #15803d;
+    border-color: #a7f3d0;
     background-color: #F0FDF4;
     color: #16A34A;
     border-color: #BBF7D0;
@@ -174,6 +245,7 @@
   }
 
   .lang-am {
+    font-family: "Noto Sans Ethiopic", sans-serif;
     font-family: 'Noto Sans Ethiopic', sans-serif;
     font-size: 0.9em;
   }
@@ -191,6 +263,7 @@
   .btn-accent {
     @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-accent-foreground font-semibold text-sm transition-all duration-150 hover:opacity-90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
   }
+  .input-field {
 .input-field  {
     @apply w-full px-4 py-3 rounded-xl border border-border bg-input text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:border-primary transition-all duration-150;
   }
@@ -221,6 +294,46 @@
 }
 
 @keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseHighlight {
+  0% {
+    background-color: transparent;
+  }
+  30% {
+    background-color: rgba(16, 185, 129, 0.15);
+  }
+  100% {
+    background-color: transparent;
+  }
   from { opacity: 0; }
   to { opacity: 1; }
 }
