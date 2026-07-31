@@ -1,6 +1,6 @@
 import React from "react";
-import { DashboardHome } from "@/features/dashboard/components/DashboardHome";
+import DashboardHome from "@/features/dashboard/components/DashboardHome";
 
 export default function HomePage() {
-  return <DashboardHome />;
+  return <DashboardHome userName="Dawit" />;
 }
