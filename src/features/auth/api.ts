@@ -1,32 +1,146 @@
+import {
+  SignupPayload,
+  LoginPayload,
+  AuthResponse,
+  User,
+} from './types';
 
-import { AuthResponse, LoginPayload, SignupPayload } from './types';
+const BASE_URL = 'http://localhost:8080/api/v1';
 
-export async function loginUser(payload: LoginPayload): Promise<AuthResponse> {
-  // TODO: Replace with real API endpoint
-  const res = await fetch('/api/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
+/**
+ * Helper function to parse API responses safely
+ */
+async function handleResponse(res: Response) {
+  const text = await res.text();
 
-  if (!res.ok) {
-    throw new Error('Failed to login');
+  let data: any = {};
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error(text);
+    }
   }
 
-  return res.json();
+  if (!res.ok) {
+    throw new Error(
+      data?.error?.message ||
+      data?.message ||
+      `Request failed (${res.status})`
+    );
+  }
+
+  return data;
 }
 
-export async function signupUser(payload: SignupPayload): Promise<AuthResponse> {
-  // TODO: Replace with real API endpoint
-  const res = await fetch('/api/auth/signup', {
+/**
+ * Register
+ */
+export async function signupUser(
+  payload: SignupPayload
+): Promise<AuthResponse> {
+  try {
+    const res = await fetch(`${BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await handleResponse(res);
+
+    localStorage.setItem('access_token', data.access);
+    localStorage.setItem('refresh_token', data.refresh);
+
+    return data;
+  } catch (error) {
+    console.error('Register Error:', error);
+
+    if (error instanceof TypeError) {
+      throw new Error(
+        'Unable to connect to the backend. Make sure the backend server is running.'
+      );
+    }
+
+    throw error;
+  }
+}
+
+/**
+ * Login
+ */
+export async function loginUser(
+  payload: LoginPayload
+): Promise<AuthResponse> {
+  try {
+    const res = await fetch(`${BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await handleResponse(res);
+
+    localStorage.setItem('access_token', data.access);
+    localStorage.setItem('refresh_token', data.refresh);
+
+    return data;
+  } catch (error) {
+    console.error('Login Error:', error);
+
+    if (error instanceof TypeError) {
+      throw new Error(
+        'Unable to connect to the backend. Make sure the backend server is running.'
+      );
+    }
+
+    throw error;
+  }
+}
+
+/**
+ * Refresh Token
+ */
+export async function refreshToken(
+  refreshToken: string
+): Promise<{ access: string; refresh: string }> {
+  const res = await fetch(`${BASE_URL}/auth/refresh`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      refresh: refreshToken,
+    }),
   });
 
-  if (!res.ok) {
-    throw new Error('Failed to create account');
-  }
+  const data = await handleResponse(res);
 
-  return res.json();
+  localStorage.setItem('access_token', data.access);
+  localStorage.setItem('refresh_token', data.refresh);
+
+  return data;
+}
+
+/**
+ * Update Profile Detail
+ */
+export async function updateProfileDetail(
+  profileData: Partial<User>
+): Promise<User> {
+  const res = await fetch(`${BASE_URL}/auth/profile/detail`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(profileData),
+  });
+
+  const data = await handleResponse(res);
+
+  return data.user ?? data;
 }

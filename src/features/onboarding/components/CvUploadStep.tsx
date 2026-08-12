@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Upload,
   FileText,
@@ -12,9 +13,10 @@ import {
 
 interface CvUploadStepProps {
   lang: 'en' | 'am';
-  onNext: () => void;
   onBack: () => void;
-  onSkip: () => void;
+  // onNext እና onSkip አማራጭ እንዲሆኑ አድርገናል (አስገዳጅ እንዳይሆኑ)
+  onNext?: () => void;
+  onSkip?: () => void;
 }
 
 const t = {
@@ -66,18 +68,24 @@ const t = {
 
 export default function CvUploadStep({
   lang,
-  onNext,
   onBack,
+  onNext,
   onSkip,
 }: CvUploadStepProps) {
+  const router = useRouter();
   const strings = t[lang];
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null); 
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
+  // ቀጥል ወይም  skiprows ሲጫኑ በቀጥታ ወደ ዳሽቦርድ የሚወስደው ተግባር
+  const handleNavigateToDashboard = () => {
+    router.push('/dashboard');
+  };
 
   return (
-    <div className="max-w-2xl mx-auto w-full text-left">
+    <div className="max-w-2xl mx-auto w-full text-left p-4 sm:p-6">
       {/* Page Title & Subtitle */}
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
           {strings.title}
         </h1>
         <p className="text-sm text-slate-500 mt-1">{strings.subtitle}</p>
@@ -85,8 +93,8 @@ export default function CvUploadStep({
 
       {/* Stepper Header (1 Upload -> 2 Review -> 3 Optimize) */}
       <div className="flex items-center justify-between mb-8 px-2 max-w-lg mx-auto text-xs font-semibold">
-        <div className="flex items-center gap-2 text-blue-600">
-          <span className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
+        <div className="flex items-center gap-2 text-primary">
+          <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold shadow-sm">
             1
           </span>
           <span>{strings.step1}</span>
@@ -111,9 +119,13 @@ export default function CvUploadStep({
         </div>
       </div>
 
-      {}
-      <label className="bg-white border-2 border-dashed border-slate-200 rounded-3xl p-8 text-center hover:border-blue-500 transition-colors cursor-pointer mb-6 group block">
-        <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
+      {/* Upload Dropzone Area */}
+      <label className={`border-2 border-dashed rounded-3xl p-8 text-center transition-all cursor-pointer mb-6 group block ${
+        uploadedFile ? 'bg-primary/5 border-primary/50 shadow-sm' : 'bg-white border-slate-200 hover:border-primary'
+      }`}>
+        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-transform group-hover:scale-105 ${
+          uploadedFile ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'
+        }`}>
           <Upload size={26} />
         </div>
 
@@ -121,7 +133,7 @@ export default function CvUploadStep({
           {uploadedFile ? uploadedFile.name : strings.uploadHeading}
         </h3>
         <p className="text-xs sm:text-sm text-slate-500 mb-5">
-          {uploadedFile ? 'File selected successfully!' : strings.uploadSubText}
+          {uploadedFile ? (lang === 'am' ? 'ፋይሉ በተሳካ ሁኔታ ተመርጧል!' : 'File selected successfully!') : strings.uploadSubText}
         </p>
 
         {/* Formats Badges */}
@@ -183,8 +195,8 @@ export default function CvUploadStep({
       </div>
 
       {/* Info Warning Banner */}
-      <div className="bg-blue-50/60 border border-blue-100 rounded-xl p-3.5 flex items-start gap-2.5 text-xs text-blue-700 mb-8">
-        <Info size={16} className="shrink-0 mt-0.5 text-blue-600" />
+      <div className="bg-primary/5 border border-primary/20 rounded-xl p-3.5 flex items-start gap-2.5 text-xs text-slate-700 mb-8">
+        <Info size={16} className="shrink-0 mt-0.5 text-primary" />
         <p className="leading-relaxed">{strings.infoNote}</p>
       </div>
 
@@ -193,7 +205,7 @@ export default function CvUploadStep({
         <button
           type="button"
           onClick={onBack}
-          className="btn-secondary px-5 py-2.5 text-sm flex items-center gap-2 cursor-pointer"
+          className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 text-sm font-semibold flex items-center gap-2 cursor-pointer transition-colors"
         >
           <ArrowLeft size={16} />
           <span>{strings.backBtn}</span>
@@ -202,16 +214,22 @@ export default function CvUploadStep({
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={onSkip}
-            className="text-xs font-semibold text-slate-400 hover:text-slate-600 px-3 py-2 cursor-pointer"
+            onClick={() => {
+              if (onSkip) onSkip();
+              handleNavigateToDashboard();
+            }}
+            className="text-xs font-semibold text-slate-400 hover:text-slate-600 px-3 py-2 cursor-pointer transition-colors"
           >
             {strings.skipBtn}
           </button>
 
           <button
             type="button"
-            onClick={onNext}
-            className="btn-primary px-6 py-2.5 text-sm flex items-center gap-2 cursor-pointer"
+            onClick={() => {
+              if (onNext) onNext();
+              handleNavigateToDashboard();
+            }}
+            className="bg-primary text-primary-foreground px-6 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 cursor-pointer shadow-md hover:opacity-90 transition-all"
           >
             <span>{strings.completeBtn}</span>
             <ArrowRight size={16} />

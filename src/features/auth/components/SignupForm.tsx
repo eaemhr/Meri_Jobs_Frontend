@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Eye, EyeOff, Mail, Lock, User, Globe, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { signupUser } from '@/features/auth/api';
 
 interface SignUpFormData {
   fullName: string;
@@ -112,6 +113,7 @@ export default function SignUpForm({ lang, onSwitchToLogin }: SignUpFormProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const {
     register,
@@ -138,11 +140,23 @@ export default function SignUpForm({ lang, onSwitchToLogin }: SignUpFormProps) {
 
   const onSubmit = async (data: SignUpFormData) => {
     setSubmitting(true);
-    // BACKEND INTEGRATION: POST /api/auth/register with { fullName, email, password, language }
-    await new Promise((r) => setTimeout(r, 1600));
-    toast.success(`Account created! Welcome to JobMate, ${data.fullName.split(' ')[0]}!`);
-    router.push('/cv-upload-optimization');
-    setSubmitting(false);
+    setAuthError(null);
+    try {
+      await registerUser({
+        fullName: data.fullName,
+        email: data.email,
+        password: data.password,
+        language: data.language,
+      });
+      toast.success(`Account created! Welcome to JobMate, ${data.fullName.split(' ')[0]}!`);
+      router.push('/cv-upload-optimization');
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || error.message || 'Failed to create account. Please try again.';
+      setAuthError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -175,6 +189,13 @@ export default function SignUpForm({ lang, onSwitchToLogin }: SignUpFormProps) {
           {strings.subheading}
         </p>
       </div>
+
+      {authError && (
+        <div className="mb-4 p-3 rounded-xl bg-error/10 border border-error/20 flex items-center gap-2 text-error text-sm">
+          <AlertCircle size={16} className="flex-shrink-0" />
+          <span>{authError}</span>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
         {/* Full name */}
@@ -371,7 +392,7 @@ export default function SignUpForm({ lang, onSwitchToLogin }: SignUpFormProps) {
         <button
           type="submit"
           disabled={submitting}
-          className="btn-primary w-full text-sm py-3"
+          className="btn-primary w-full text-sm py-3 flex items-center justify-center gap-2"
         >
           {submitting ? (
             <>
