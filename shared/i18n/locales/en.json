@@ -2,7 +2,10 @@
   "auth.login.title": "Log in",
   "auth.login.submit": "Log in",
   "cv.upload.prompt": "Upload your CV",
+  "cv.upload.uploading": "Uploading your CV...",
   "cv.upload.processing": "Processing your CV...",
+  "cv.upload.needsReview": "Some sections need your review before continuing.",
+  "cv.upload.failed": "Something went wrong parsing your CV. Please try again.",
   "jobs.search.placeholder": "Search jobs",
   "matches.score.label": "Match score",
   "interview.session.start": "Start mock interview"
